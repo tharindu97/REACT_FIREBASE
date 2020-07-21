@@ -14,6 +14,6 @@ const firebaseApp = firebase.initializeApp({
 });
 
 const db = firebaseApp.firestore();
-
+// 2 18
 
 export default db;

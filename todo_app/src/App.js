@@ -3,6 +3,7 @@ import { Button, FormControl, InputLabel, Input } from '@material-ui/core';
 import './App.css';
 import Todo from './Todo';
 import db from './firebase';
+import firebase from 'firebase';
 
 function App() {
 
@@ -12,9 +13,10 @@ function App() {
 
   // when the app loads, we need to listen to the database  and fetch new todos as the
   useEffect(() => {
+
     // this code here... fires when the app.js loads
-    db.collection('todos').onSnapshot(snapshot =>{
-      setTodos(snapshot.docs.map(doc => doc.data().todo))
+    db.collection('todos').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
+      setTodos(snapshot.docs.map( doc => ({id: doc.id, todo: doc.data().todo}) )) 
     })
   },[]) 
 
@@ -23,7 +25,8 @@ function App() {
     event.preventDefault(); // will stop th REFRESH
     
     db.collection('todos').add({
-      todo: input
+      todo: input,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
     })
 
     setInput(''); // clear up the input after clicking add todo button
